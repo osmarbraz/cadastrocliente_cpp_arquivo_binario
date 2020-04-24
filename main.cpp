@@ -13,7 +13,6 @@
 using namespace std;
 
 //Registro a ser armazenado no arquivo
-
 struct Cliente {
     int codigo;
     char nome[85];
