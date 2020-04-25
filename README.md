@@ -10,6 +10,7 @@
  - Incluir<br>
  - Atualizar<br>
  - Excluir Lógico<br>
+ - Excluir Físico<br>
  - Pesquisar Chave<br>
  - Pesquisar Posição<br>
  - Listar Lógico<br>

@@ -13,6 +13,7 @@
 using namespace std;
 
 //Registro a ser armazenado no arquivo
+
 struct Cliente {
     int codigo;
     char nome[85];
@@ -217,7 +218,7 @@ bool excluirLogico(int chave) {
             if (registro.codigo == chave) {
                 achei = true;
             }
-             //Incrementa o contador de posições
+            //Incrementa o contador de posições
             posicao = posicao + 1;
         }
         //Se encontrou o registro realiza a exclusão
@@ -242,6 +243,125 @@ bool excluirLogico(int chave) {
 }
 
 /**
+ * Excluí fisicamente um registro do arquivo.
+ * 
+ * Cria um arquivo temporário para receber os registros menos o que deve ser excluído.
+ * Apaga o arquivo principal e renomeia o arquivo temporário para principal.
+ *
+ * @param chave Valor da chave do registro a ser excluído.
+ * @return Verdadeiro ou falso se conseguiu excluir fisicamente o registro.
+ */
+bool excluirFisico(int chave) {
+
+    //Copia os dados do arquivo principal para o arquivo temporário
+
+    //Retorna o nome do arquivo até o ponto
+    string NOMEARQUIVOTEMP = NOMEARQUIVO.substr(0, NOMEARQUIVO.find("."));
+    //Adiciona a extensão tmp ao nome do arquivo temporário
+    NOMEARQUIVOTEMP = NOMEARQUIVOTEMP + ".TMP";
+
+    //Declara o arquivo temporario
+    ofstream arquivoTemp;
+    //Associa o arquivo temporário a um nome e abre o arquivo para saída(escrita) de forma binária no fim.    
+    arquivoTemp.open(NOMEARQUIVOTEMP, ios::out | ios::binary);
+    //Verifica se o arquivo temporário está aberto
+    if (arquivoTemp.is_open()) {
+        //Declara o arquivo
+        ifstream arquivo;
+        //Associa o arquivo a um nome e abre o arquivo para entrada(leitura) de forma binária.
+        arquivo.open(NOMEARQUIVO, ios::in | ios::binary);
+        //Verifica se o arquivo está aberto
+        if (arquivo.is_open()) {
+            //Declara um registro para armazenar os dados lido do arquivo.
+            Cliente registro;
+            //Posiciona no fim do arquivo
+            arquivo.seekg(0, arquivo.end);
+            //Retorna o tamanho do arquivo	
+            int tamanhoArquivo = arquivo.tellg();
+            //posiciona no inicio do arquivo
+            arquivo.seekg(0, arquivo.beg);
+            //Enquanto o ponteiro de leitura for menor que o tamanho do arquivo
+            while (arquivo.tellg() < tamanhoArquivo) {
+                //Realiza a leitura de um registro do arquivo
+                arquivo.read((char *) &registro, sizeof (Cliente));
+                //Utiliza somente valores chave diferente de -1
+                if (registro.codigo != -1) {
+                    //Copia todos os registros menos a chave
+                    if (registro.codigo != chave) {
+                        //Posiciona o arquivo temporário no final                                
+                        arquivoTemp.seekp(0, arquivoTemp.end);
+                        //Escreve o registro no arquivo temporário
+                        arquivoTemp.write((char *) &registro, sizeof (Cliente));
+                    }
+                }
+            }
+            //Fecha o arquivo
+            arquivo.close();
+        } else {
+            cout << "Arquivo não pode ser aberto" << endl;
+            return false;
+        }
+        //Fecha o arquivo temporário
+        arquivoTemp.close();
+    } else {
+        cout << "Arquivo não pode ser aberto" << endl;
+        return false;
+    }
+
+    //Copia os dados do arquivo temporário para o arquivo principal
+
+    //Declara o arquivo
+    ofstream arquivo;
+    //Associa o arquivo a um nome e abre o arquivo para saída(escrita) de forma binária no fim.    
+    arquivo.open(NOMEARQUIVO, ios::out | ios::binary);
+    //Verifica se o arquivo temporário está aberto
+    if (arquivo.is_open()) {
+        //Declara o arquivo temporário
+        ifstream arquivoTemp;
+        //Associa o arquivo a um nome e abre o arquivo temporário para entrada(leitura) de forma binária.
+        arquivoTemp.open(NOMEARQUIVOTEMP, ios::in | ios::binary);
+        //Verifica se o arquivo temporário está aberto
+        if (arquivoTemp.is_open()) {
+            //Declara um registro para armazenar os dados lido do arquivo temporário.
+            Cliente registro;
+            //Posiciona no fim do arquivo temporário
+            arquivoTemp.seekg(0, arquivoTemp.end);
+            //Retorna o tamanho do arquivo temporário
+            int tamanhoArquivo = arquivoTemp.tellg();
+            //posiciona no inicio do arquivo temporário
+            arquivoTemp.seekg(0, arquivoTemp.beg);
+            //Enquanto o ponteiro de leitura for menor que o tamanho do arquivo temporário
+            while (arquivoTemp.tellg() < tamanhoArquivo) {
+                //Realiza a leitura de um registro do arquivo
+                arquivoTemp.read((char *) &registro, sizeof (Cliente));
+                //Posiciona o arquivo no final                                
+                arquivo.seekp(0, arquivo.end);
+                //Escreve o registro no arquivo temporário
+                arquivo.write((char *) &registro, sizeof (Cliente));
+            }
+            //Fecha o arquivo temporário
+            arquivoTemp.close();
+
+            //Apaga o arquivo temporário
+            remove(NOMEARQUIVOTEMP.c_str());
+        } else {
+            cout << "Arquivo não pode ser aberto" << endl;
+        }
+        //Fecha o arquivo
+        arquivo.close();
+
+        //Terminou a cópia
+        return true;
+
+    } else {
+        cout << "Arquivo não pode ser aberto" << endl;
+        return false;
+    }
+
+    return false;
+}
+
+/**
  * Pesquisa uma chave no arquivo retornando o registro.
  *
  * @param chave Valor chave a se pesquisado no arquivo.
@@ -259,7 +379,7 @@ Cliente pesquisarRegistro(int chave) {
     arquivo.open(NOMEARQUIVO, ios::in | ios::binary);
     //Verifica se o arquivo está aberto
     if (arquivo.is_open()) {
-        
+
         //Declara um registro para armazenar os dados lido do arquivo.
         Cliente registro;
         //Posiciona no fim do arquivo
@@ -306,7 +426,7 @@ void listarLogico() {
     arquivo.open(NOMEARQUIVO, ios::in | ios::binary);
     //Verifica se o arquivo está aberto
     if (arquivo.is_open()) {
-        //Instancia um registro para armazenar os dados lido do arquivo.
+        //Declara um registro para armazenar os dados lido do arquivo.
         Cliente registro;
         //Posiciona no fim do arquivo
         arquivo.seekg(0, arquivo.end);
@@ -343,7 +463,7 @@ void listarFisico() {
     arquivo.open(NOMEARQUIVO, ios::in | ios::binary);
     //Verifica se o arquivo está aberto
     if (arquivo.is_open()) {
-        //Instancia um registro para armazenar os dados lido do arquivo.
+        //Declara um registro para armazenar os dados lido do arquivo.
         Cliente registro;
         //Posiciona no fim do arquivo
         arquivo.seekg(0, arquivo.end);
@@ -418,9 +538,9 @@ void informacoes() {
         //Retorna o tamanho do arquivo	
         int tamanhoArquivo = arquivo.tellg();
         //Mostra as informações do arquivo
-        cout << "Tamanho do Arquivo : " << tamanhoArquivo << " Kb " << endl 
-             << "Número de Registros : " << getQuantidadeRegistro() << endl
-             << "Cada regitro possui : " << getTamanhoRegistro() << " Kb " << endl;
+        cout << "Tamanho do Arquivo : " << tamanhoArquivo << " Kb " << endl
+                << "Número de Registros : " << getQuantidadeRegistro() << endl
+                << "Cada regitro possui : " << getTamanhoRegistro() << " Kb " << endl;
         arquivo.close();
     } else {
         cout << "Arquivo não pode ser aberto" << endl;
@@ -453,19 +573,20 @@ bool zeraArquivo() {
  */
 int main(int argc, char *argv[]) {
 
-     //Recebe a opção do menu
+    //Recebe a opção do menu
     int opcao = -1;
     while (opcao != 99) {
         cout << "\n\t### Arquivo Binário Sequencial ###" << endl
                 << " 1 - Incluir " << endl
                 << " 2 - Atualizar " << endl
                 << " 3 - Excluir Lógico " << endl
-                << " 4 - Pesquisar Chave " << endl
-                << " 5 - Pesquisar Posição " << endl
-                << " 6 - Listar Lógico " << endl
-                << " 7 - Listar Físico " << endl
-                << " 8 - Informações " << endl
-                << " 9 - Zera Arquivo " << endl
+                << " 4 - Excluir Físico " << endl
+                << " 5 - Pesquisar Chave " << endl
+                << " 6 - Pesquisar Posição " << endl
+                << " 7 - Listar Lógico " << endl
+                << " 8 - Listar Físico " << endl
+                << " 9 - Informações " << endl
+                << "10 - Zera Arquivo " << endl
                 << "99 - Sair" << endl
                 << "Digite uma Opção: ";
         cin >> opcao;
@@ -517,6 +638,20 @@ int main(int argc, char *argv[]) {
             }
             case 4:
             {
+                //Pergunta qual o código a ser excluído Fisicamente
+                int codigoExcluir;
+                cout << " Digite o codigo a ser excluído: ";
+                cin >> codigoExcluir;
+                //Excluí o registro com o código especificado
+                if (excluirFisico(codigoExcluir) == true) {
+                    cout << "Registro " << codigoExcluir << " excluído com sucesso." << endl;
+                } else {
+                    cout << "Registro " + codigoExcluir << " não foi excluído." << endl;
+                }
+                break;
+            }
+            case 5:
+            {
                 //Pergunta qual a chave do cliente deve ser procurada no arquivo
                 int chave;
                 cout << "Digite o código a ser perquisado: ";
@@ -533,7 +668,7 @@ int main(int argc, char *argv[]) {
 
                 break;
             }
-            case 5:
+            case 6:
             {
                 // Pergunta qual a chave do cliente deve ser procurada sua posição no arquivo
                 int chave;
@@ -550,7 +685,7 @@ int main(int argc, char *argv[]) {
 
                 break;
             }
-            case 6:
+            case 7:
             {
                 //Lista logicamente os dados do arquivo. Não inclui chave com -1                    
                 cout << "Lista Lógico:" << endl;
@@ -558,7 +693,7 @@ int main(int argc, char *argv[]) {
                 cout << endl;
                 break;
             }
-            case 7:
+            case 8:
             {
                 //Lista fisicamente os dados do arquivo
                 cout << "Lista Físico:" << endl;
@@ -566,13 +701,13 @@ int main(int argc, char *argv[]) {
                 cout << endl;
                 break;
             }
-            case 8:
+            case 9:
             {
                 //Retorna as informações do arquivo
                 informacoes();
                 break;
             }
-            case 9:
+            case 10:
             {
                 //Esvazia o arquivo de dados
                 if (zeraArquivo() == true) {
