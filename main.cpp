@@ -666,15 +666,15 @@ int main(int argc, char *argv[]) {
 
                 // Procura a posição do registro com o código no arquivo
                 int posicao = posicaoRegistro(cliente.codigo);
-                //Enquanto não for localizado
+                //Enquanto não for localizado(posição != -1) e o usuário desejar proseguir
                 while (posicao != -1 && cliente.codigo != -2) {
                     cout << "Este código já existe digite um novo código para o cliente ou -2 para sair:";
                     cin >> cliente.codigo;
                     // Procura a posição do registro com o código no arquivo
                     posicao = posicaoRegistro(cliente.codigo);
                 }
-                //Não foi encontrado o código do cliente, portanto pode realizar a inclusão
-                if (posicao == -1) {
+                  //Se código diferente de -2 realiza a a inclusão
+                if (cliente.codigo != -2) {
                     if (inserirFimArquivo(cliente) == true) {
                         cout << "Registro inserido com sucesso." << endl;
                     } else {
@@ -683,7 +683,6 @@ int main(int argc, char *argv[]) {
                 } else {
                     cout << "Registro não foi inserido." << endl;
                 }
-
                 break;
             }
             case 3:
