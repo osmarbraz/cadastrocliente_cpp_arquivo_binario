@@ -16,6 +16,7 @@
  - Excluir Físico<br>
  - Pesquisar Chave<br>
  - Pesquisar Posição<br>
+ - Pesquisar Nome<br>
  - Listar Lógico<br>
  - Listar Físico<br>
  - Informações<br>

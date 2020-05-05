@@ -415,6 +415,58 @@ Cliente pesquisarRegistro(int chave) {
 }
 
 /**
+ * Pesquisa um nome no arquivo retornando o registro.
+ *
+ * @param chave Valor a ser pesquisado no arquivo.
+ *
+ * @return Retorna o registro encontrado no arquivo.
+ */
+Cliente pesquisarRegistroNome(char* chave) {
+    //Registro de retorno definido como -1
+    Cliente retorno;
+    retorno.codigo = -1;
+
+    //Declara o arquivo
+    ifstream arquivo;
+    //Associa o arquivo a um nome e abre o arquivo para entrada(leitura) de forma binária.    
+    arquivo.open(NOMEARQUIVO.c_str(), ios::in | ios::binary);
+    //Verifica se o arquivo está aberto
+    if (arquivo.is_open()) {
+
+        //Declara um registro para armazenar os dados lido do arquivo.
+        Cliente registro;
+        //Posiciona no fim do arquivo
+        arquivo.seekg(0, arquivo.end);
+        //Retorna o tamanho do arquivo	
+        int tamanhoArquivo = arquivo.tellg();
+        //posiciona no inicio do arquivo
+        arquivo.seekg(0, arquivo.beg);
+        //Utilizado para interroper o laço da leitura do arquivo
+        bool achei = false;
+        //Enquanto o ponteiro de leitura for menor que o tamanho do arquivo e não achei
+        while ((arquivo.tellg() < tamanhoArquivo) && (achei == false)) {
+            //Realiza a leitura de um registro do arquivo
+            arquivo.read((char *) &registro, sizeof (Cliente));
+            //Encerra a procura se encontrei a chave
+            if (strcmp(registro.nome, chave) == 0) {
+                achei = true;
+            }
+        }
+        //Fecha o arquivo
+        arquivo.close();
+        //Verifica se achou
+        if (achei == true) {
+            //retorna o registro encontrado
+            return registro;
+        } else {
+            //retorna o registro de não encontrado
+            return retorno;
+        }
+    }
+    return retorno;
+}
+
+/**
  * Realiza o retorno dos dados não excluídos do arquivo.
  *
  * Mostra os dados do arquivo onde o campo chave é diferente de -1.
@@ -585,10 +637,11 @@ int main(int argc, char *argv[]) {
                 << " 5 - Excluir Físico " << endl
                 << " 6 - Pesquisar Chave " << endl
                 << " 7 - Pesquisar Posição " << endl
-                << " 8 - Listar Lógico " << endl
-                << " 9 - Listar Físico " << endl
-                << "10 - Informações " << endl
-                << "11 - Zera Arquivo " << endl
+                << " 8 - Pesquisar Nome " << endl
+                << " 9 - Listar Lógico " << endl
+                << "10 - Listar Físico " << endl
+                << "11 - Informações " << endl
+                << "12 - Zera Arquivo " << endl
                 << "99 - Sair" << endl
                 << "Digite uma Opção: ";
         cin >> opcao;
@@ -710,10 +763,29 @@ int main(int argc, char *argv[]) {
                 } else {
                     cout << "Não Achei o registro com a chave " << chave << endl;
                 }
-
                 break;
             }
             case 8:
+            {
+                //Pergunta qual o nome do cliente deve ser procurada no arquivo                
+                char chave[85];
+                //Limpa o fluxo
+                fflush(stdin); //ou cin.ignore();
+                cout << "Digite o nome a ser perquisado: ";
+                gets(chave);
+                // Procura o registro do cliente com a chave no arquivo
+                Cliente registro = pesquisarRegistroNome(chave);
+                // Se registro.codigo != -1 encontrou o registro
+                if (registro.codigo != -1) {
+                    cout << "Achei o registro " << endl;
+                    cout << registro.codigo << " -  " << registro.nome << " - " << registro.cpf << endl;
+                } else {
+                    cout << "Não Achei o registro com o nome " << chave << endl;
+                }
+
+                break;
+            }
+            case 9:
             {
                 //Lista logicamente os dados do arquivo. Não inclui chave com -1                    
                 cout << "Lista Lógico:" << endl;
@@ -721,7 +793,7 @@ int main(int argc, char *argv[]) {
                 cout << endl;
                 break;
             }
-            case 9:
+            case 10:
             {
                 //Lista fisicamente os dados do arquivo
                 cout << "Lista Físico:" << endl;
@@ -729,13 +801,13 @@ int main(int argc, char *argv[]) {
                 cout << endl;
                 break;
             }
-            case 10:
+            case 11:
             {
                 //Retorna as informações do arquivo
                 informacoes();
                 break;
             }
-            case 11:
+            case 12:
             {
                 //Esvazia o arquivo de dados
                 if (zeraArquivo() == true) {
