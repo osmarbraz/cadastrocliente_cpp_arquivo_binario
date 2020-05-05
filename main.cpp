@@ -2,13 +2,14 @@
 /**
  * Programa que armazena um registro de tamanho fixo em um arquivo binário.
  *
- * Realiza as operações de inclusão, exclusão(lógica), alteração, pesquisa, posição e listagem dos registros.
+ * Realiza as operações de inclusão, inclusão com verificação, exclusão(lógica), alteração, pesquisa, posição e listagem dos registros.
  *
  */
 
-#include <iostream>
-#include <cstring>
+#include <iostream> //cout, endl
+#include <cstdlib> //EXIT_SUCCESS
 #include <fstream>
+#include <cstring>
 
 using namespace std;
 
@@ -74,7 +75,7 @@ int posicaoRegistro(int chave) {
     //Declara o arquivo
     ifstream arquivo;
     //Associa o arquivo a um nome e abre o arquivo para entrada(leitura) de forma binária.    
-    arquivo.open(NOMEARQUIVO, ios::in | ios::binary);
+    arquivo.open(NOMEARQUIVO.c_str(), ios::in | ios::binary);
     //Verifica se o arquivo está aberto
     if (arquivo.is_open()) {
         //Guarda a posição de parada da procura    	
@@ -124,7 +125,7 @@ bool inserirFimArquivo(Cliente registro) {
     //Declara o arquivo
     ofstream arquivo;
     //Associa o arquivo a um nome e abre o arquivo para saída(escrita) de forma binária no fim.    
-    arquivo.open(NOMEARQUIVO, ios::out | ios::binary | ios::app);
+    arquivo.open(NOMEARQUIVO.c_str(), ios::out | ios::binary | ios::app);
     //Verifica se o arquivo está aberto
     if (arquivo.is_open()) {
         //Escreve o registro no arquivo
@@ -157,7 +158,7 @@ bool atualizarArquivo(int chave, Cliente cliente) {
         //Declara o arquivo
         fstream arquivo;
         //Associa o arquivo a um nome e abre o arquivo para saída(escrita) e entrada(leitura) de forma binária.    
-        arquivo.open(NOMEARQUIVO, ios::in | ios::out | ios::binary);
+        arquivo.open(NOMEARQUIVO.c_str(), ios::in | ios::out | ios::binary);
         //Verifica se o arquivo está aberto
         if (arquivo.is_open()) {
             //Atribui o novo registro a ser alterado
@@ -195,7 +196,7 @@ bool excluirLogico(int chave) {
     //Declara o arquivo
     fstream arquivo;
     //Associa o arquivo a um nome e abre o arquivo para saída(escrita) e entrada(leitura) de forma binária.    
-    arquivo.open(NOMEARQUIVO, ios::in | ios::out | ios::binary);
+    arquivo.open(NOMEARQUIVO.c_str(), ios::in | ios::out | ios::binary);
     //Verifica se o arquivo está aberto
     if (arquivo.is_open()) {
         //Guarda a posição da parada da procura    	
@@ -263,13 +264,13 @@ bool excluirFisico(int chave) {
     //Declara o arquivo temporario
     ofstream arquivoTemp;
     //Associa o arquivo temporário a um nome e abre o arquivo para saída(escrita) de forma binária no fim.    
-    arquivoTemp.open(NOMEARQUIVOTEMP, ios::out | ios::binary);
+    arquivoTemp.open(NOMEARQUIVOTEMP.c_str(), ios::out | ios::binary);
     //Verifica se o arquivo temporário está aberto
     if (arquivoTemp.is_open()) {
         //Declara o arquivo
         ifstream arquivo;
         //Associa o arquivo a um nome e abre o arquivo para entrada(leitura) de forma binária.
-        arquivo.open(NOMEARQUIVO, ios::in | ios::binary);
+        arquivo.open(NOMEARQUIVO.c_str(), ios::in | ios::binary);
         //Verifica se o arquivo está aberto
         if (arquivo.is_open()) {
             //Declara um registro para armazenar os dados lido do arquivo.
@@ -313,13 +314,13 @@ bool excluirFisico(int chave) {
     //Declara o arquivo
     ofstream arquivo;
     //Associa o arquivo a um nome e abre o arquivo para saída(escrita) de forma binária no fim.    
-    arquivo.open(NOMEARQUIVO, ios::out | ios::binary);
+    arquivo.open(NOMEARQUIVO.c_str(), ios::out | ios::binary);
     //Verifica se o arquivo temporário está aberto
     if (arquivo.is_open()) {
         //Declara o arquivo temporário
         ifstream arquivoTemp;
         //Associa o arquivo a um nome e abre o arquivo temporário para entrada(leitura) de forma binária.
-        arquivoTemp.open(NOMEARQUIVOTEMP, ios::in | ios::binary);
+        arquivoTemp.open(NOMEARQUIVOTEMP.c_str(), ios::in | ios::binary);
         //Verifica se o arquivo temporário está aberto
         if (arquivoTemp.is_open()) {
             //Declara um registro para armazenar os dados lido do arquivo temporário.
@@ -376,7 +377,7 @@ Cliente pesquisarRegistro(int chave) {
     //Declara o arquivo
     ifstream arquivo;
     //Associa o arquivo a um nome e abre o arquivo para entrada(leitura) de forma binária.    
-    arquivo.open(NOMEARQUIVO, ios::in | ios::binary);
+    arquivo.open(NOMEARQUIVO.c_str(), ios::in | ios::binary);
     //Verifica se o arquivo está aberto
     if (arquivo.is_open()) {
 
@@ -423,7 +424,7 @@ void listarLogico() {
     //Declara o arquivo
     ifstream arquivo;
     //Associa o arquivo a um nome e abre o arquivo para entrada(leitura) de forma binária.
-    arquivo.open(NOMEARQUIVO, ios::in | ios::binary);
+    arquivo.open(NOMEARQUIVO.c_str(), ios::in | ios::binary);
     //Verifica se o arquivo está aberto
     if (arquivo.is_open()) {
         //Declara um registro para armazenar os dados lido do arquivo.
@@ -460,7 +461,7 @@ void listarFisico() {
     //Declara o arquivo
     ifstream arquivo;
     //Associa o arquivo a um nome e abre o arquivo para entrada(leitura) de forma binária.
-    arquivo.open(NOMEARQUIVO, ios::in | ios::binary);
+    arquivo.open(NOMEARQUIVO.c_str(), ios::in | ios::binary);
     //Verifica se o arquivo está aberto
     if (arquivo.is_open()) {
         //Declara um registro para armazenar os dados lido do arquivo.
@@ -494,7 +495,7 @@ int getQuantidadeRegistro() {
     //Declara o arquivo
     ifstream arquivo;
     //Associa o arquivo a um nome e abre o arquivo para entrada(leitura) de forma binária.
-    arquivo.open(NOMEARQUIVO, ios::in | ios::binary);
+    arquivo.open(NOMEARQUIVO.c_str(), ios::in | ios::binary);
     //Verifica se o arquivo está aberto
     if (arquivo.is_open()) {
         //Declara um registro para armazenar os dados lido do arquivo.
@@ -530,7 +531,7 @@ void informacoes() {
     //Declara o arquivo
     ifstream arquivo;
     //Associa o arquivo a um nome e abre o arquivo para entrada(leitura) de forma binária.
-    arquivo.open(NOMEARQUIVO, ios::in | ios::binary);
+    arquivo.open(NOMEARQUIVO.c_str(), ios::in | ios::binary);
     //Verifica se o arquivo está aberto
     if (arquivo.is_open()) {
         //Posiciona no fim do arquivo
@@ -556,7 +557,7 @@ bool zeraArquivo() {
     //Declara o arquivo
     ofstream arquivo;
     //Associa o arquivo a um nome e abre o arquivo para saída(escrita) de forma binária no fim.
-    arquivo.open(NOMEARQUIVO, ios::out | ios::binary);
+    arquivo.open(NOMEARQUIVO.c_str(), ios::out | ios::binary);
 
     if (arquivo.is_open() == true) {
         //Fecha o arquivo
@@ -578,15 +579,16 @@ int main(int argc, char *argv[]) {
     while (opcao != 99) {
         cout << "\n\t### Arquivo Binário Sequencial ###" << endl
                 << " 1 - Incluir " << endl
-                << " 2 - Atualizar " << endl
-                << " 3 - Excluir Lógico " << endl
-                << " 4 - Excluir Físico " << endl
-                << " 5 - Pesquisar Chave " << endl
-                << " 6 - Pesquisar Posição " << endl
-                << " 7 - Listar Lógico " << endl
-                << " 8 - Listar Físico " << endl
-                << " 9 - Informações " << endl
-                << "10 - Zera Arquivo " << endl
+                << " 2 - Incluir com verificação " << endl
+                << " 3 - Atualizar " << endl
+                << " 4 - Excluir Lógico " << endl
+                << " 5 - Excluir Físico " << endl
+                << " 6 - Pesquisar Chave " << endl
+                << " 7 - Pesquisar Posição " << endl
+                << " 8 - Listar Lógico " << endl
+                << " 9 - Listar Físico " << endl
+                << "10 - Informações " << endl
+                << "11 - Zera Arquivo " << endl
                 << "99 - Sair" << endl
                 << "Digite uma Opção: ";
         cin >> opcao;
@@ -604,8 +606,34 @@ int main(int argc, char *argv[]) {
                 }
                 break;
             }
-
             case 2:
+            {
+                //Chama o método leitura para retornar um cliente instanciado e preenchido
+                Cliente cliente = leitura("Cadastro de cliente com verificação do código");
+
+                // Procura a posição do registro com o código no arquivo
+                int posicao = posicaoRegistro(cliente.codigo);
+                //Enquanto não for localizado
+                while (posicao != -1 && cliente.codigo != -2) {
+                    cout << "Este código já existe digite um novo código para o cliente ou -2 para sair:";
+                    cin >> cliente.codigo;
+                    // Procura a posição do registro com o código no arquivo
+                    posicao = posicaoRegistro(cliente.codigo);
+                }
+                //Não foi encontrado o código do cliente, portanto pode realizar a inclusão
+                if (posicao == -1) {
+                    if (inserirFimArquivo(cliente) == true) {
+                        cout << "Registro inserido com sucesso." << endl;
+                    } else {
+                        cout << "Registro não foi inserido." << endl;
+                    }
+                } else {
+                    cout << "Registro não foi inserido." << endl;
+                }
+
+                break;
+            }
+            case 3:
             {
                 //Pergunta qual o código a ser atualizado
                 int codigoAtualizar;
@@ -622,7 +650,7 @@ int main(int argc, char *argv[]) {
                 }
                 break;
             }
-            case 3:
+            case 4:
             {
                 //Pergunta qual o código a ser excluído logicamente
                 int codigoExcluir;
@@ -636,7 +664,7 @@ int main(int argc, char *argv[]) {
                 }
                 break;
             }
-            case 4:
+            case 5:
             {
                 //Pergunta qual o código a ser excluído Fisicamente
                 int codigoExcluir;
@@ -650,7 +678,7 @@ int main(int argc, char *argv[]) {
                 }
                 break;
             }
-            case 5:
+            case 6:
             {
                 //Pergunta qual a chave do cliente deve ser procurada no arquivo
                 int chave;
@@ -668,7 +696,7 @@ int main(int argc, char *argv[]) {
 
                 break;
             }
-            case 6:
+            case 7:
             {
                 // Pergunta qual a chave do cliente deve ser procurada sua posição no arquivo
                 int chave;
@@ -685,7 +713,7 @@ int main(int argc, char *argv[]) {
 
                 break;
             }
-            case 7:
+            case 8:
             {
                 //Lista logicamente os dados do arquivo. Não inclui chave com -1                    
                 cout << "Lista Lógico:" << endl;
@@ -693,7 +721,7 @@ int main(int argc, char *argv[]) {
                 cout << endl;
                 break;
             }
-            case 8:
+            case 9:
             {
                 //Lista fisicamente os dados do arquivo
                 cout << "Lista Físico:" << endl;
@@ -701,13 +729,13 @@ int main(int argc, char *argv[]) {
                 cout << endl;
                 break;
             }
-            case 9:
+            case 10:
             {
                 //Retorna as informações do arquivo
                 informacoes();
                 break;
             }
-            case 10:
+            case 11:
             {
                 //Esvazia o arquivo de dados
                 if (zeraArquivo() == true) {

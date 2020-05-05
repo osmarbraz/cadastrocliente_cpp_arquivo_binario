@@ -10,6 +10,7 @@
 
 ## Operações disponíveis:<br>
  - Incluir<br>
+ - Incluir com verificação<br>
  - Atualizar<br>
  - Excluir Lógico<br>
  - Excluir Físico<br>
